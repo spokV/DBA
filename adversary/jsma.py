@@ -5,7 +5,7 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 import numpy as np
-from settings import *
+#from settings import *
 from torch.autograd import Variable
 
 class SaliencyMapMethod(object):

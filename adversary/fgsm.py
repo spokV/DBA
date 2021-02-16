@@ -2,7 +2,7 @@
 import torch
 from torch.autograd import Variable
 import numpy as np
-from settings import *
+#from settings import *
 import torch.nn.functional as F
 
 class Attack(object):

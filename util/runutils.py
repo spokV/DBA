@@ -3,7 +3,7 @@ from operator import methodcaller
 import torch
 import torch.nn as nn
 from torch.autograd import Variable
-from settings import *
+#from settings import *
 
 
 def get_cuda_state(obj):
