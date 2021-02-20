@@ -8,15 +8,16 @@ import torchvision.transforms as transforms
 from models.mnist_model import MnistModel
 from adversary.fgsm import Attack
 
+MNIST_CKPT = './checkpoint/mnist_undercover.pth'
 
-def undercover_attack(UndercoverAttack, x, y_true, eps=1/255):
+def undercover_attack(UndercoverAttack, x, y_true, device, eps=1/255):
     x = Variable(x.to(device), requires_grad=True)
     y_true = Variable(y_true.to(device), requires_grad=False)
     x_adv = UndercoverAttack.fgsm(x, y_true, False, eps)
     return x_adv
 
 
-def train(epochs):
+def train(epochs, eps, device):
     print('==> Preparing data..')
     transform_train = transforms.Compose([
         transforms.RandomHorizontalFlip(),
@@ -47,7 +48,7 @@ def train(epochs):
             total += targets.size(0)
             correct += predicted.eq(targets).sum().item()
 
-            x_adv = undercover_attack(UndercoverAttack, inputs, targets, eps=0.15)
+            x_adv = undercover_attack(UndercoverAttack, inputs, targets, device, eps=eps)#0.15
             adv_outputs = net(x_adv)
 
             loss1 = criterion(outputs, targets)
@@ -70,7 +71,7 @@ def train(epochs):
             torch.save(state, MNIST_CKPT)
 
 
-def test():
+def test(device):
     # Data
     print('==> Preparing data..')
     transform_test = transforms.Compose([
@@ -107,7 +108,7 @@ def test():
 
 
 if __name__ == '__main__':
-    MNIST_CKPT = './checkpoint/mnist_undercover.pth'
+    #MNIST_CKPT = './checkpoint/mnist_undercover.pth'
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     #train(50)
