@@ -91,6 +91,8 @@ dba_testiter = iter(dba_testloader)
 # train the mlp
 epochs = 10
 for i in range(epochs):
+    train_loss = 0
+    correct, total = 0, 0
     for x, y in dba_trainloader:
         optimizer.zero_grad()
         x, y = x.to(device), y.to(device)
@@ -99,9 +101,15 @@ for i in range(epochs):
         _, V2 = undercoverNet(undercover_adv, dba=True)
         V = torch.cat([V1, V2, V1 - V2, V1 * V2], axis=-1)
         y_pred = mlp(V)
+        total += y.size(0)
+        correct += y_pred.argmax(dim=1).eq(y).sum().item()
+        
         loss = criterion(y_pred, y)
+        train_loss += loss.item()
         loss.backward()
         optimizer.step()
+    acc = 1.0 * correct / total
+    print('epoch: %d, train loss: %.2f, train acc: %.4f' % (i, train_loss, acc))
 
 # test
 total, correct = 0, 0
