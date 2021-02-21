@@ -39,7 +39,7 @@ class Attack(object):
         if x_adv.grad is not None:
             x_adv.grad.data.fill_(0)
         cost.backward()
-        print(torch.norm(x_adv.grad))
+        #print(torch.norm(x_adv.grad))
         x_adv = x_adv + eps*x_adv.grad/torch.norm(x_adv.grad, p=None, keepdim=True)
         
         #x_adv = torch.clamp(x_adv, x_val_min, x_val_max)
